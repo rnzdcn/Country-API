@@ -7,9 +7,13 @@ import {
   DropdownMenuContent, DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx'
+import { useGetCountries } from '@/hooks/useGetCountries.ts'
 
 export default function Homepage() {
   const { theme } = useTheme()
+
+  const countries = useGetCountries()
+
   return (
     <div className={cn([ 'flex flex-col flex-1' ])}>
       <div className={cn(['flex flex-col gap-8 md:flex-row justify-between'])}>
