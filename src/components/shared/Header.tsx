@@ -20,7 +20,6 @@ export default function Header() {
         'flex items-center justify-between',
         'h-[var(--header-height)]',
         'bg-primary',
-        'shadow-bottom',
         'text-foreground',
       ])}
     >
