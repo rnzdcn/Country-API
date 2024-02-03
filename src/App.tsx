@@ -1,11 +1,14 @@
-import { cn } from '@/lib/utils'
+import MainLayout from '@/components/layouts/MainLayout.tsx'
+import { Route, Routes } from 'react-router-dom'
+import Homepage from '@/pages/Homepage.tsx'
 
 function App() {
-
   return (
-    <div className={cn([''])}>
-Renzo
-    </div>
+    <MainLayout>
+      <Routes>
+        <Route path={'/'} element={<Homepage/>}/>
+      </Routes>
+    </MainLayout>
   )
 }
 

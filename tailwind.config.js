@@ -37,7 +37,6 @@ export default {
           'xl': '1280px',
           '2xl': '1440px',
         },
-
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
