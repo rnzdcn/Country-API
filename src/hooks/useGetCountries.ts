@@ -4,12 +4,11 @@ export function useGetCountries() {
   return useQuery({
     queryKey: [ 'countries' ],
     queryFn: async () => {
-      try {
-        return await (await fetch(`${import.meta.env.VITE_API_URL}/all`)).json()
-      } catch (error) {
-        console.error(`Query Error: ${error}`)
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/all`)
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
       }
+      return response.json()
     },
-    staleTime: 1000 * 60 * 60 * 24
   })
 }
