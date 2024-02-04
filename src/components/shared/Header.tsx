@@ -16,7 +16,7 @@ export default function Header() {
   return (
     <nav
       className={cn([
-        'px-4',
+        'px-4 lg:px-8 xl:px-16',
         'flex items-center justify-between',
         'h-[var(--header-height)]',
         'bg-primary',
@@ -25,7 +25,7 @@ export default function Header() {
     >
       <h1
         className={cn([
-          'font-extrabold text-base md:text-lg lg:text-xl'
+          'font-extrabold text-xl md:text-2xl'
       ])}
       >
         Where in the world?

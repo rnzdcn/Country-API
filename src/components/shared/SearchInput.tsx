@@ -9,10 +9,10 @@ type SearchInputType = {
   setSearch: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-export default function SearchInput({search, setSearch}: SearchInputType){
-  const {theme} = useTheme()
+export default function SearchInput({ search, setSearch }: SearchInputType) {
+  const { theme } = useTheme()
 
-  return(
+  return (
     <div className={cn([
       'flex items-center relative',
       'py-3',
@@ -22,7 +22,7 @@ export default function SearchInput({search, setSearch}: SearchInputType){
     ])}
     >
       <Image
-        className={cn([ 'w-5 h-5', 'absolute z-50 left-2.5' ])}
+        className={cn([ 'w-4 h-4', 'absolute z-50 left-2.5' ])}
         src={`/svg/${theme === 'light' ? 'search_dark' : 'search_light'}.svg`}
         alt={`${theme === 'light' ? 'Search Dark' : 'Search Light'} Icon`}
       />
