@@ -10,7 +10,7 @@ export default function Providers({children}: ChildrenType){
   return(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme={'system'}>
+        <ThemeProvider defaultTheme={'light'}>
           {children}
         </ThemeProvider>
 
