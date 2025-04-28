@@ -27,7 +27,7 @@ export default function Homepage() {
       setSearch(null);
     }
   }, [region]);
-
+  //Add comment
   return (
     <div className={cn([ 'flex flex-col flex-1 gap-8 lg:px-8 xl:px-16' ])}>
       <div className={cn([ 'flex flex-col gap-8 md:flex-row justify-between' ])}>
