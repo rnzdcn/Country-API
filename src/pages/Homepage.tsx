@@ -57,23 +57,41 @@ export default function Homepage() {
 
         {
           countries.data && Array.from(countries.data,(country, key) => (
-            <Link to={`/${country.name}`} key={key}>
-              <Card>
-                <Image
-                  className={cn([ 'w-full h-[213px]', 'rounded-t-lg' ])}
-                  src={country.flag_url}
-                  alt={country.flag_alt}
-                />
+            <Link to={`/${country.name}`} key={key} className="group">
+              <Card className={cn([
+                'overflow-hidden border border-border/50',
+                'shadow-sm transition-all duration-300 ease-out',
+                'group-hover:shadow-xl group-hover:-translate-y-2 group-hover:border-border',
+              ])}>
+                <div className={cn([
+                  'aspect-[3/2] flex items-center justify-center p-5 overflow-hidden',
+                  'bg-slate-100 dark:bg-slate-800',
+                ])}>
+                  <Image
+                    className="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-[1.04]"
+                    src={country.flag_url}
+                    alt={country.flag_alt}
+                  />
+                </div>
 
-                <CardContent className={cn([ 'px-3.5 py-8 lg:px-8' ])}>
-                  <h2 className={cn([ 'text-lg md:text-xl font-bold' ])}>
-                    {country.name.length > 20 ? country.name.substring(0, 33) + '...' : country.name}
+                <CardContent className="px-5 pt-4 pb-5">
+                  <h2 className="font-extrabold text-base leading-tight mb-3.5 line-clamp-1">
+                    {country.name}
                   </h2>
 
-                  <div className={cn(['flex flex-col gap-1', 'mt-4'])}>
-                    <h4 className={cn(['text-base md:text-xl font-semibold'])}>Population: <span className={'font-normal'}>{country.population.toLocaleString()}</span></h4>
-                    <h4 className={cn(['text-base md:text-xl font-semibold'])}>Region: <span className={'font-normal'}>{country.region}</span></h4>
-                    <h4 className={cn(['text-base md:text-xl font-semibold'])}>Capital: <span className={'font-normal'}>{country.capital}</span></h4>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex justify-between items-baseline gap-3">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-foreground/50 shrink-0">Population</span>
+                      <span className="text-sm font-semibold truncate">{country.population.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-baseline gap-3">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-foreground/50 shrink-0">Region</span>
+                      <span className="text-sm font-semibold truncate">{country.region}</span>
+                    </div>
+                    <div className="flex justify-between items-baseline gap-3">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-foreground/50 shrink-0">Capital</span>
+                      <span className="text-sm font-semibold truncate">{country.capital?.[0] ?? '—'}</span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

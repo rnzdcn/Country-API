@@ -10,12 +10,13 @@ export function useGetCountries({countryName, region}: UseCountryDataProps) {
   return useQuery({
     queryKey: [ 'countries', countryName, region ],
     queryFn: async () => {
-      let endpoint = `${import.meta.env.VITE_API_URL}/all`
+      const fields = 'fields=name,flags,population,region,capital';
+      let endpoint = `${import.meta.env.VITE_API_URL}/all?${fields}`
 
       if (countryName && !region) {
-        endpoint = `${import.meta.env.VITE_API_URL}/name/${countryName}`;
+        endpoint = `${import.meta.env.VITE_API_URL}/name/${countryName}?${fields}`;
       } else if (region && !countryName) {
-        endpoint = `${import.meta.env.VITE_API_URL}/region/${region}`;
+        endpoint = `${import.meta.env.VITE_API_URL}/region/${region}?${fields}`;
       }
 
       const response = await fetch(endpoint);
@@ -30,7 +31,7 @@ export function useGetCountries({countryName, region}: UseCountryDataProps) {
       if (!countries) return
       return countries.sort((a, b) => a.name.common.localeCompare(b.name.common)).map((country: CountryType) => {
         return {
-          flag_url: country.flags.png,
+          flag_url: country.flags.svg,
           flag_alt: country.flags.alt,
           name: country.name.common,
           population: country.population,

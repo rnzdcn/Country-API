@@ -10,9 +10,10 @@ export function useGetCountry(){
   }
 
   return useQuery({
-    queryKey: ['country'],
+    queryKey: ['country', country],
     queryFn: async () => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/name/${country}`)
+      const fields = 'fields=name,flags,population,region,subregion,capital,tld,currencies,languages,borders'
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/name/${country}?${fields}`)
 
       if (!response.ok) {
         throw new Error('Network response was not ok')
@@ -24,7 +25,7 @@ export function useGetCountry(){
       if (!countries) return
       return countries.sort((a, b) => a.name.common.localeCompare(b.name.common)).map((country: CountryType) => {
         return {
-          flag_url: country.flags.png,
+          flag_url: country.flags.svg,
           flag_alt: country.flags.alt,
           name: country.name.common,
           native_name: country.name.nativeName,
