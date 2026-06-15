@@ -3,10 +3,16 @@ import BackButton from '@/components/shared/BackButton.tsx'
 import { useGetCountry } from '@/hooks/useGetCountry.ts'
 import { Image } from '@/components/shared/Image.tsx'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
-import React from 'react'
 
 export default function Country() {
   const country = useGetCountry()
+  const data = country.data
+
+  const nativeNameKey = data ? Object.keys(data.native_name)[0] : undefined
+  const nativeName = data && nativeNameKey ? (data.native_name[nativeNameKey] as { common: string }).common : undefined
+
+  const currencies = data?.currencies.map((currency) => currency.name).join(', ')
+  const languages = data?.languages.map((language) => language.name).join(', ')
 
   return (
     <div className={cn([ 'flex flex-col flex-1 gap-10 lg:px-8 xl:px-16' ])}>
@@ -32,82 +38,75 @@ export default function Country() {
         </div>
       )}
 
-      {country.data && Array.from(country.data, (country, key) => {
-        const nativeNameKey = Object.keys(country.native_name)[0]
-        const nativeName = (country.native_name[nativeNameKey] as { common: string }).common
+      {country.isError && (
+        <div className={cn(['flex flex-1 items-center justify-center text-center text-red-400'])}>
+          Country not found.
+        </div>
+      )}
 
-        const currencies = Object.values(country.currencies as Record<string, { name: string }>)
-          .map(c => c.name)
-          .join(', ')
+      {data && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 w-full">
 
-        const languages = Object.values(country.languages).join(', ')
+          <div className={cn([
+            'rounded-xl overflow-hidden shadow-md',
+            'bg-slate-100 dark:bg-slate-800',
+            'flex items-center justify-center p-8',
+          ])}>
+            <Image
+              className="w-full h-auto max-h-[360px] object-contain drop-shadow-md"
+              src={data.flag_url}
+              alt={data.flag_alt}
+            />
+          </div>
 
-        return (
-          <React.Fragment key={key}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 w-full">
+          <div className="flex flex-col justify-center gap-8">
+            <h1 className="text-2xl lg:text-3xl font-extrabold leading-tight">
+              {data.name}
+            </h1>
 
-              <div className={cn([
-                'rounded-xl overflow-hidden shadow-md',
-                'bg-slate-100 dark:bg-slate-800',
-                'flex items-center justify-center p-8',
-              ])}>
-                <Image
-                  className="w-full h-auto max-h-[360px] object-contain drop-shadow-md"
-                  src={country.flag_url}
-                  alt={country.flag_alt}
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
+              <div className="flex flex-col gap-2">
+                <DetailRow label="Native Name" value={nativeName ?? '—'} />
+                <DetailRow label="Population" value={data.population.toLocaleString()} />
+                <DetailRow label="Region" value={data.region} />
+                <DetailRow label="Sub Region" value={data.sub_region ?? '—'} />
+                <DetailRow label="Capital" value={data.capital?.[0] ?? '—'} />
               </div>
 
-              <div className="flex flex-col justify-center gap-8">
-                <h1 className="text-2xl lg:text-3xl font-extrabold leading-tight">
-                  {country.name}
-                </h1>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
-                  <div className="flex flex-col gap-2">
-                    <DetailRow label="Native Name" value={nativeName} />
-                    <DetailRow label="Population" value={country.population.toLocaleString()} />
-                    <DetailRow label="Region" value={country.region} />
-                    <DetailRow label="Sub Region" value={country.sub_region ?? '—'} />
-                    <DetailRow label="Capital" value={country.capital?.[0] ?? '—'} />
-                  </div>
-
-                  <div className="flex flex-col gap-2 mt-4 sm:mt-0">
-                    <DetailRow label="Top Level Domain" value={country.top_level_domain?.join(', ') ?? '—'} />
-                    <DetailRow label="Currencies" value={currencies || '—'} />
-                    <DetailRow label="Languages" value={languages || '—'} />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-foreground/50">
-                    Border Countries
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {country.border_countries?.length
-                      ? country.border_countries.map((bc, i) => (
-                          <span
-                            key={i}
-                            className={cn([
-                              'bg-primary text-primary-foreground',
-                              'text-xs font-semibold',
-                              'px-4 py-1.5 rounded-md',
-                              'shadow-sm border border-border/50',
-                            ])}
-                          >
-                            {bc}
-                          </span>
-                        ))
-                      : <span className="text-sm text-foreground/60">None</span>
-                    }
-                  </div>
-                </div>
+              <div className="flex flex-col gap-2 mt-4 sm:mt-0">
+                <DetailRow label="Top Level Domain" value={data.top_level_domain?.join(', ') ?? '—'} />
+                <DetailRow label="Currencies" value={currencies || '—'} />
+                <DetailRow label="Languages" value={languages || '—'} />
               </div>
-
             </div>
-          </React.Fragment>
-        )
-      })}
+
+            <div className="flex flex-col gap-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-foreground/50">
+                Border Countries
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {data.border_countries?.length
+                  ? data.border_countries.map((bc, i) => (
+                      <span
+                        key={i}
+                        className={cn([
+                          'bg-primary text-primary-foreground',
+                          'text-xs font-semibold',
+                          'px-4 py-1.5 rounded-md',
+                          'shadow-sm border border-border/50',
+                        ])}
+                      >
+                        {bc}
+                      </span>
+                    ))
+                  : <span className="text-sm text-foreground/60">None</span>
+                }
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
     </div>
   )
 }

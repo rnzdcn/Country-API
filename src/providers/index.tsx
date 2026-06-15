@@ -4,7 +4,13 @@ import { ChildrenType } from '@/types'
 import { ThemeProvider } from '@/components/theme/theme-provider.tsx'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+})
 
 export default function Providers({children}: ChildrenType){
   return(

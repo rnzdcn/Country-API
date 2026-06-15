@@ -4,65 +4,79 @@ export type ChildrenType = {
   children: React.ReactNode;
 };
 
-export type CountryType = {
-  altSpellings: string[],
-  area: number,
-  borders: string[],
-  capital: string[],
-  capitalInfo: {
-    latlng: number[]
+export type CountryCapital = {
+  name: string,
+  coordinates: {
+    lat: number,
+    lng: number
   },
-  car: {
-    signs: string[],
-    side: string
+  attributes: {
+    primary?: boolean,
+    constitutional?: boolean,
+    administrative?: boolean,
+    executive?: boolean,
+    legislative?: boolean,
+    judicial?: boolean
+  }
+}
+
+export type CountryCurrency = {
+  code: string,
+  name: string,
+  symbol: string
+}
+
+export type CountryLanguage = {
+  iso639_1?: string,
+  iso639_2b?: string,
+  iso639_2t?: string,
+  iso639_3?: string,
+  bcp47?: string,
+  name: string,
+  native_name?: string
+}
+
+export type CountryListItem = {
+  names: {
+    common: string
   },
-  cca2: string,
-  cca3: string,
-  ccn3: string,
-  cioc: string,
-  coatOfArms: {
-    png: string,
-    svg: string
-  },
-  continents: string[],
-  currencies: Record<string, unknown>,
-  demonyms: Record<string, unknown>,
-  fifa: string,
-  flag: string,
-  flags: {
-    png: string,
-    svg: string,
-    alt: string
-  },
-  gini: Record<number, number>,
-  idd: {
-    root: string,
-    suffixes: string[]
-  },
-  independent: boolean,
-  landlocked: boolean,
-  languages: Record<string, string>,
-  latlng: number[],
-  maps: {
-    googleMaps: string,
-    openStreetMaps: string
-  },
-  name: {
-    common: string,
-    official: string,
-    nativeName: Record<string, unknown>
+  flag: {
+    url_svg: string,
+    description: string
   },
   population: number,
-  postalCode: {
-    format: string,
-    regex: string
-  },
   region: string,
-  startOfWeek: string,
-  status: string,
+  capitals: CountryCapital[]
+}
+
+export type CountriesMeta = {
+  total: number,
+  count: number,
+  limit: number,
+  offset: number,
+  more: boolean
+}
+
+export type CountriesPage = {
+  objects: CountryListItem[],
+  meta: CountriesMeta
+}
+
+export type CountryDetail = {
+  names: {
+    common: string,
+    native: Record<string, { common: string, official: string }>
+  },
+  flag: {
+    url_svg: string,
+    description: string
+  },
+  population: number,
+  region: string,
   subregion: string,
-  timezones: string[],
-  tld: string[],
-  translations: Record<string, unknown>,
-  unMember: boolean
+  capitals: CountryCapital[],
+  tlds: string[],
+  currencies: CountryCurrency[],
+  languages: CountryLanguage[],
+  borders: string[]
 }

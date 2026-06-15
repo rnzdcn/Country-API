@@ -1,5 +1,7 @@
 import React from 'react'
 import {cva, type VariantProps} from 'class-variance-authority'
+import {ImageOff} from 'lucide-react'
+import {cn} from '@/lib/utils.ts'
 
 const imageVariants = cva(
   '',
@@ -37,6 +39,20 @@ const Image = React.forwardRef<HTMLImageElement, ImageProps>(({
     alt,
     ...props
   }, ref) => {
+    if (!src) {
+      return (
+        <div className={cn([
+          imageVariants({variant, size, className}),
+          'flex flex-col items-center justify-center gap-1.5',
+          'text-center text-[11px] font-medium text-foreground/40',
+          'bg-slate-200 dark:bg-slate-700 rounded-sm',
+        ])}>
+          <ImageOff className="w-5 h-5" />
+          No flag image available
+        </div>
+      )
+    }
+
     return (
       <img src={src} alt={alt} ref={ref} className={imageVariants({variant, size, className})} {...props}
            draggable={false}/>

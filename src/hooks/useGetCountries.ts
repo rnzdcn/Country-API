@@ -1,45 +1,50 @@
-import { useQuery } from '@tanstack/react-query'
-import { CountryType } from '@/types'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { CountriesPage } from '@/types'
 
 type UseCountryDataProps = {
   countryName?: string | null;
   region?: string | null;
 };
 
+const PAGE_SIZE = 100
+
 export function useGetCountries({countryName, region}: UseCountryDataProps) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: [ 'countries', countryName, region ],
-    queryFn: async () => {
-      const fields = 'fields=name,flags,population,region,capital';
-      let endpoint = `${import.meta.env.VITE_API_URL}/all?${fields}`
+    queryFn: async ({pageParam}) => {
+      const responseFields = 'response_fields=names.common,flag.url_svg,flag.description,population,region,capitals'
+      const pagination = `limit=${PAGE_SIZE}&offset=${pageParam}`
+      let endpoint = `${import.meta.env.VITE_API_URL}?${responseFields}&${pagination}`
 
       if (countryName && !region) {
-        endpoint = `${import.meta.env.VITE_API_URL}/name/${countryName}?${fields}`;
+        endpoint = `${import.meta.env.VITE_API_URL}?q=${encodeURIComponent(countryName)}&${responseFields}&${pagination}`;
       } else if (region && !countryName) {
-        endpoint = `${import.meta.env.VITE_API_URL}/region/${region}?${fields}`;
+        endpoint = `${import.meta.env.VITE_API_URL}?region=${encodeURIComponent(region)}&${responseFields}&${pagination}`;
       }
 
-      const response = await fetch(endpoint);
+      const response = await fetch(endpoint, {
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
-      return response.json()
+      const json = await response.json()
+      return json.data as CountriesPage
     },
-    select: (countries: Array<CountryType>) => {
-      if (!countries) return
-      return countries.sort((a, b) => a.name.common.localeCompare(b.name.common)).map((country: CountryType) => {
-        return {
-          flag_url: country.flags.svg,
-          flag_alt: country.flags.alt,
-          name: country.name.common,
-          population: country.population,
-          region: country.region,
-          capital: country.capital,
-        }
-      })
-    },
-    retry: 1
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.meta.more ? lastPage.meta.offset + lastPage.meta.limit : undefined,
+    select: (data) => data.pages.flatMap((page) => page.objects.map((country) => ({
+      flag_url: country.flag.url_svg,
+      flag_alt: country.flag.description,
+      name: country.names.common,
+      population: country.population,
+      region: country.region,
+      capital: country.capitals?.map((capital) => capital.name),
+    }))),
+    retry: 1,
   })
 }
