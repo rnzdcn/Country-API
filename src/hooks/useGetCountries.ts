@@ -12,21 +12,18 @@ export function useGetCountries({countryName, region}: UseCountryDataProps) {
   return useInfiniteQuery({
     queryKey: [ 'countries', countryName, region ],
     queryFn: async ({pageParam}) => {
-      const responseFields = 'response_fields=names.common,flag.url_svg,flag.description,population,region,capitals'
-      const pagination = `limit=${PAGE_SIZE}&offset=${pageParam}`
-      let endpoint = `${import.meta.env.VITE_API_URL}?${responseFields}&${pagination}`
-
+      const params = new URLSearchParams()
       if (countryName && !region) {
-        endpoint = `${import.meta.env.VITE_API_URL}?q=${encodeURIComponent(countryName)}&${responseFields}&${pagination}`;
+        params.set('q', countryName)
       } else if (region && !countryName) {
-        endpoint = `${import.meta.env.VITE_API_URL}?region=${encodeURIComponent(region)}&${responseFields}&${pagination}`;
+        params.set('region', region)
       }
+      params.set('limit', String(PAGE_SIZE))
+      params.set('offset', String(pageParam))
 
-      const response = await fetch(endpoint, {
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-        },
-      });
+      const endpoint = `${import.meta.env.VITE_API_URL}/api/countries?${params.toString()}`
+
+      const response = await fetch(endpoint);
 
       if (!response.ok) {
         throw new Error('Network response was not ok');

@@ -12,14 +12,9 @@ export function useGetCountry(){
   return useQuery({
     queryKey: ['country', country],
     queryFn: async () => {
-      const responseFields = 'response_fields=names.common,names.native,flag.url_svg,flag.description,population,region,subregion,capitals,tlds,currencies,languages,borders'
-      const endpoint = `${import.meta.env.VITE_API_URL}?q=${encodeURIComponent(country)}&${responseFields}`
+      const endpoint = `${import.meta.env.VITE_API_URL}/api/countries/${encodeURIComponent(country)}`
 
-      const response = await fetch(endpoint, {
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-        },
-      })
+      const response = await fetch(endpoint)
 
       if (!response.ok) {
         throw new Error('Network response was not ok')
